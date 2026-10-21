@@ -8,7 +8,10 @@ import ScreenCaptureKit
 /// Exige l'autorisation « Enregistrement de l'écran ». ScreenCaptureKit ne livre
 /// une image complète que quand l'écran change : un bureau immobile ne coûte
 /// presque rien. Rien n'est écrit sur disque.
-final class ScreenStreamer: NSObject, SCStreamOutput, SCStreamDelegate {
+///
+/// `@unchecked Sendable` : `stream` et `stopped` sont sous verrou, les rappels
+/// sont posés avant `start()` et ne changent plus ensuite.
+final class ScreenStreamer: NSObject, SCStreamOutput, SCStreamDelegate, @unchecked Sendable {
     /// Appelé sur une file interne, une image JPEG à la fois.
     var onFrame: ((Data) -> Void)?
     /// Arrêt imposé par le système (autorisation retirée, écran débranché…).
