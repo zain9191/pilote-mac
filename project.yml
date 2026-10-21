@@ -1,0 +1,111 @@
+# Projet Xcode généré par XcodeGen : `xcodegen generate` produit PiloteMac.xcodeproj.
+# Le .xcodeproj n'est pas versionné : ce fichier fait foi.
+name: PiloteMac
+
+options:
+  bundleIdPrefix: com.zain9191.pilote
+  deploymentTarget:
+    iOS: "17.0"
+    macOS: "14.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    # Renseigner son équipe dans Xcode (Signing & Capabilities) ou ici.
+    DEVELOPMENT_TEAM: ""
+
+targets:
+  # App iPhone.
+  Pilote:
+    type: application
+    platform: iOS
+    sources:
+      - iOS
+      - Shared
+    info:
+      path: iOS/Info.plist
+      properties:
+        CFBundleDisplayName: Pilote
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        NSLocalNetworkUsageDescription: Pilote se connecte à l'agent installé sur ton Mac.
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.zain9191.pilote
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  # Agent du Mac : app de la barre des menus, sans icône dans le Dock.
+  PiloteAgent:
+    type: application
+    platform: macOS
+    sources:
+      - Agent
+      - Shared
+    info:
+      path: Agent/Info.plist
+      properties:
+        CFBundleDisplayName: Pilote Agent
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSUIElement: true
+        LSApplicationCategoryType: public.app-category.utilities
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.zain9191.pilote.agent
+        PRODUCT_NAME: Pilote Agent
+        # Hors bac à sable : un agent sandboxé ne peut ni injecter de clavier/souris
+        # ni lancer pmset/osascript.
+        ENABLE_APP_SANDBOX: NO
+        ENABLE_HARDENED_RUNTIME: NO
+
+  # Tests unitaires du code partagé (protocole, adresse, jeton).
+  PiloteTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - Tests
+      - Shared
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.zain9191.pilote.tests
+
+schemes:
+  Pilote:
+    build:
+      targets:
+        Pilote: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+  PiloteAgent:
+    build:
+      targets:
+        PiloteAgent: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+  PiloteTests:
+    build:
+      targets:
+        PiloteTests: [test]
+    test:
+      config: Debug
+      targets:
+        - PiloteTests

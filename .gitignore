@@ -1,0 +1,15 @@
+# Généré par XcodeGen depuis project.yml
+PiloteMac.xcodeproj/
+
+# Xcode
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+
+# macOS
+.DS_Store
+
+# Également générés par XcodeGen (section info: de project.yml)
+iOS/Info.plist
+Agent/Info.plist

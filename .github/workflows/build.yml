@@ -1,0 +1,39 @@
+name: Compilation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Générer le projet Xcode
+        run: |
+          xcodebuild -version
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Tests du code partagé (macOS)
+        run: |
+          xcodebuild test -project PiloteMac.xcodeproj -scheme PiloteTests \
+            -destination 'platform=macOS' CODE_SIGN_IDENTITY=- -quiet
+
+      - name: Agent macOS
+        run: |
+          xcodebuild build -project PiloteMac.xcodeproj -scheme PiloteAgent \
+            -destination 'generic/platform=macOS' CODE_SIGN_IDENTITY=- -quiet
+
+      - name: App iOS
+        run: |
+          xcodebuild build -project PiloteMac.xcodeproj -scheme Pilote \
+            -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO -quiet
