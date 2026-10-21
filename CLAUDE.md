@@ -12,14 +12,14 @@ que d'affirmer. Signaler les erreurs de l'utilisateur sans complaisance.
 
 ## État au 2026-10-21
 
-**Écrit sans compilateur.** La session qui a produit le code tournait dans un
-conteneur Linux sans Xcode. La seule vérification possible est la **CI GitHub**
-(runner macOS) : `.github/workflows/build.yml` génère le projet, lance les tests
-du code partagé et compile les deux apps. Tant que la CI n'est pas verte, rien
-n'est vérifié.
+**Écrit sans compilateur**, dans un conteneur Linux sans Xcode. La seule
+vérification est la **CI GitHub** (`.github/workflows/build.yml`, runner
+`macos-15` arm64, Xcode 16.4) : elle génère le projet, lance les tests du code
+partagé et compile les deux apps. **Verte dès le premier envoi** (commit
+`8ffce27`). Ne pas pousser une modification Swift sans la faire passer par elle.
 
-Une relecture par un second agent (sans compilateur non plus) a été faite avant
-le premier envoi ; ses corrections sont intégrées (capture orpheline, cycle de
+Une relecture par un second agent (sans compilateur non plus) a précédé le
+premier envoi ; ses corrections sont intégrées (capture orpheline, cycle de
 rétention, ping, isolement de `.refreshable`, versions dans l'Info.plist…).
 
 **Jamais exécuté sur un vrai Mac ni un vrai iPhone.** Tout ce qui suit reste à
@@ -103,8 +103,8 @@ Mac**, **app iOS native en Swift**, **projet séparé** de `maison-supervision`.
 
 ## Chantiers ouverts
 
-1. **Faire passer la CI**, puis premier essai réel sur le Mac et l'iPhone de
-   l'utilisateur ; noter ici ce qui a été vérifié.
+1. **Premier essai réel** sur le Mac et l'iPhone de l'utilisateur ; noter ici
+   ce qui a été vérifié.
 2. Glisser-déposer (appui maintenu puis déplacement).
 3. Plusieurs écrans : choisir l'écran capturé.
 4. Widget / raccourcis Siri pour les actions rapides (app native : possible).

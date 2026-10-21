@@ -3,8 +3,9 @@ import Foundation
 import Network
 
 /// Un iPhone connecté. Tout l'état vit sur `server.queue` ; le travail lent
-/// (état du Mac, commandes) part sur d'autres files.
-final class Session {
+/// (état du Mac, commandes) part sur d'autres files. `@unchecked Sendable` :
+/// la file série tient lieu de verrou.
+final class Session: @unchecked Sendable {
     private(set) var authenticated = false
 
     private let channel: Channel

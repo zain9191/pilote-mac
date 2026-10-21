@@ -176,6 +176,7 @@ final class KeyCatcherView: UIView, UIKeyInput {
 
     override var canBecomeFirstResponder: Bool { true }
 
+    @discardableResult
     override func resignFirstResponder() -> Bool {
         let resigned = super.resignFirstResponder()
         if resigned {
