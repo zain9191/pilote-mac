@@ -109,6 +109,16 @@ Mac**, **app iOS native en Swift**, **projet séparé** de `maison-supervision`.
 3. Plusieurs écrans : choisir l'écran capturé.
 4. Widget / raccourcis Siri pour les actions rapides (app native : possible).
 
+## Poste de l'utilisateur
+
+- **MacBook Air**, dossier perso **`~/Documents/Perso`** (le `~/Perso` des autres
+  passations est sur le Pi, pas sur le Mac). Clone : `~/Documents/Perso/pilote-mac`.
+- Shell **zsh** : ne jamais mettre de commentaire `#` sur une ligne de commande
+  à coller, zsh le passe en argument (un `gh repo clone … # ou …` a échoué ainsi).
+- Signature : **Personal Team `J7KH3A5CM8`**, inscrite dans `project.yml`.
+  Le certificat « Apple Development » a dû être créé à la main (Manage
+  Certificates) ; la cible iOS exige l'iPhone branché pour obtenir un profil.
+
 ## Dépôt
 
 `github.com/zain9191/pilote-mac`, privé. Commits au nom de l'utilisateur

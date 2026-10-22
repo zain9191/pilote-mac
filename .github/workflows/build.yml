@@ -17,6 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # DEVELOPMENT_TEAM= : le runner n'a pas le compte Apple de project.yml,
+      # on compile comme avant qu'il y soit inscrit.
       - name: Générer le projet Xcode
         run: |
           xcodebuild -version
@@ -29,7 +31,7 @@ jobs:
           # combien de tests ont tourné, pas seulement que l'étape a réussi.
           status=0
           xcodebuild test -project PiloteMac.xcodeproj -scheme PiloteTests \
-            -destination 'platform=macOS,arch=arm64' CODE_SIGN_IDENTITY=- > test.log 2>&1 || status=$?
+            -destination 'platform=macOS,arch=arm64' CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= > test.log 2>&1 || status=$?
           grep -E "Test Suite 'All tests'|Executed [0-9]+ test|error:|failed" test.log || true
           if [ "$status" -ne 0 ]; then tail -n 60 test.log; fi
           exit "$status"
@@ -37,9 +39,9 @@ jobs:
       - name: Agent macOS
         run: |
           xcodebuild build -project PiloteMac.xcodeproj -scheme PiloteAgent \
-            -destination 'generic/platform=macOS' CODE_SIGN_IDENTITY=- -quiet
+            -destination 'generic/platform=macOS' CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= -quiet
 
       - name: App iOS
         run: |
           xcodebuild build -project PiloteMac.xcodeproj -scheme Pilote \
-            -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO -quiet
+            -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO DEVELOPMENT_TEAM= -quiet

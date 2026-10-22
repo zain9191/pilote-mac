@@ -30,17 +30,27 @@ Le `.xcodeproj` n'est pas versionné : il est produit par XcodeGen depuis
 
 ```bash
 brew install xcodegen
-git clone git@github.com:zain9191/pilote-mac.git
+cd ~/Documents/Perso
+gh repo clone zain9191/pilote-mac
 cd pilote-mac
 xcodegen generate
 open PiloteMac.xcodeproj
 ```
 
-Dans Xcode, pour chacune des cibles **Pilote** et **PiloteAgent** : onglet
-*Signing & Capabilities*, choisir son équipe (un identifiant Apple gratuit suffit,
-« Personal Team »). Si Xcode refuse l'identifiant de paquet, remplacer
-`com.zain9191.pilote` par un autre dans `project.yml` puis relancer
-`xcodegen generate`.
+**Signature.** L'équipe (`DEVELOPMENT_TEAM`) est inscrite dans `project.yml`.
+Pour un autre compte Apple, y mettre son propre Team ID (un identifiant Apple
+gratuit suffit, « Personal Team »), puis relancer `xcodegen generate`. Si Xcode
+refuse l'identifiant de paquet, remplacer `com.zain9191.pilote` par un autre au
+même endroit.
+
+Deux messages attendus au premier essai, dans *Signing & Capabilities* :
+
+- cible **PiloteAgent**, « No signing certificate "Mac Development" found » :
+  bouton **Manage Certificates…** › **+** › **Apple Development**, puis
+  **Try Again** ;
+- cible **Pilote**, « Your team has no devices… » : brancher l'iPhone,
+  le choisir comme destination en haut de la fenêtre, puis **Try Again**. Un
+  compte gratuit ne fabrique de profil qu'avec un appareil réel branché.
 
 ### 2. L'agent sur le Mac
 

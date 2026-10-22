@@ -16,8 +16,9 @@ settings:
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
     CODE_SIGN_STYLE: Automatic
-    # Renseigner son équipe dans Xcode (Signing & Capabilities) ou ici.
-    DEVELOPMENT_TEAM: ""
+    # Équipe personnelle (identifiant Apple gratuit) de Zain. Écrite ici pour
+    # survivre à chaque `xcodegen generate` ; un autre utilisateur met la sienne.
+    DEVELOPMENT_TEAM: J7KH3A5CM8
 
 targets:
   # App iPhone.
