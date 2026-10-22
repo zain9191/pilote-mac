@@ -30,29 +30,46 @@ Le `.xcodeproj` n'est pas versionné : il est produit par XcodeGen depuis
 
 ```bash
 brew install xcodegen
-git clone git@github.com:zain9191/pilote-mac.git
+cd ~/Documents/Perso
+gh repo clone zain9191/pilote-mac
 cd pilote-mac
 xcodegen generate
 open PiloteMac.xcodeproj
 ```
 
-Dans Xcode, pour chacune des cibles **Pilote** et **PiloteAgent** : onglet
-*Signing & Capabilities*, choisir son équipe (un identifiant Apple gratuit suffit,
-« Personal Team »). Si Xcode refuse l'identifiant de paquet, remplacer
-`com.zain9191.pilote` par un autre dans `project.yml` puis relancer
-`xcodegen generate`.
+**Signature.** L'équipe (`DEVELOPMENT_TEAM`) est inscrite dans `project.yml`.
+Pour un autre compte Apple, y mettre son propre Team ID (un identifiant Apple
+gratuit suffit, « Personal Team »), puis relancer `xcodegen generate`. Si Xcode
+refuse l'identifiant de paquet, remplacer `com.zain9191.pilote` par un autre au
+même endroit.
+
+Deux messages attendus au premier essai, dans *Signing & Capabilities* :
+
+- cible **PiloteAgent**, « No signing certificate "Mac Development" found » :
+  bouton **Manage Certificates…** › **+** › **Apple Development**, puis
+  **Try Again** ;
+- cible **Pilote**, « Your team has no devices… » : brancher l'iPhone,
+  le choisir comme destination en haut de la fenêtre, puis **Try Again**. Un
+  compte gratuit ne fabrique de profil qu'avec un appareil réel branché.
 
 ### 2. L'agent sur le Mac
 
 Le plus simple : schéma **PiloteAgent**, destination « My Mac », ⌘R. Pour une
-installation durable, compiler en Release et copier l'app dans `/Applications` :
+installation durable, compiler en Release et copier l'app dans `/Applications`
+(une seule ligne, chaque étape ne part que si la précédente a réussi) :
 
 ```bash
-xcodebuild -project PiloteMac.xcodeproj -scheme PiloteAgent -configuration Release \
-  -derivedDataPath build DEVELOPMENT_TEAM=<ID_EQUIPE> build
-cp -R "build/Build/Products/Release/Pilote Agent.app" /Applications/
-open "/Applications/Pilote Agent.app"
+DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project PiloteMac.xcodeproj -scheme PiloteAgent -configuration Release -destination 'platform=macOS,arch=arm64' -derivedDataPath "$HOME/Library/Developer/PiloteBuild" ARCHS=arm64 -allowProvisioningUpdates -quiet build && cp -R "$HOME/Library/Developer/PiloteBuild/Build/Products/Release/Pilote Agent.app" /Applications/ && open "/Applications/Pilote Agent.app"
 ```
+
+- `DEVELOPER_DIR` : sans lui, si `xcode-select` pointe vers les Command Line
+  Tools, `xcodebuild` refuse de tourner.
+- Dossier de compilation **hors de `~/Documents`** : si Documents est
+  synchronisé par iCloud Drive, les attributs étendus qu'il ajoute font échouer
+  la signature (« resource fork, Finder information, or similar detritus not
+  allowed »).
+- Pour une mise à jour, quitter l'agent et supprimer l'ancienne copie de
+  `/Applications` avant le `cp`, sinon la nouvelle se range à l'intérieur.
 
 Une icône d'iPhone apparaît dans la barre des menus. Dans son menu :
 

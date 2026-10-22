@@ -22,10 +22,17 @@ Une relecture par un second agent (sans compilateur non plus) a précédé le
 premier envoi ; ses corrections sont intégrées (capture orpheline, cycle de
 rétention, ping, isolement de `.refreshable`, versions dans l'Info.plist…).
 
-**Jamais exécuté sur un vrai Mac ni un vrai iPhone.** Tout ce qui suit reste à
-confirmer sur l'appareil : injection clavier/souris, verrouillage ⌃⌘Q, touches
-multimédia, capture d'écran, `tailscale serve` sur le Mac, presse-papiers
-universel pour le jeton.
+**Vérifié sur le Mac de l'utilisateur le 2026-10-22** : l'agent compile et
+démarre (lancé depuis Xcode), écoute sur `127.0.0.1:8770`, les deux
+autorisations s'accordent, la config d'exemple est lue (1 action),
+`tailscale serve --https=443` le publie sur
+`macbook-air-de-zain.tail8099ca.ts.net` et la poignée de main WebSocket y
+répond `101` (en HTTP/1.1 ; un `curl` en HTTP/2 reçoit un 502, c'est le test
+qui est faux, pas l'agent).
+
+**Reste à confirmer sur l'appareil** : l'app iPhone elle-même, injection
+clavier/souris, verrouillage ⌃⌘Q, touches multimédia, capture d'écran,
+presse-papiers universel pour le jeton.
 
 Demande d'origine : « une app sur iPhone pour contrôler mon Mac ». Choix faits
 par l'utilisateur au départ : **actions rapides + bureau à distance + état du
@@ -108,6 +115,31 @@ Mac**, **app iOS native en Swift**, **projet séparé** de `maison-supervision`.
 2. Glisser-déposer (appui maintenu puis déplacement).
 3. Plusieurs écrans : choisir l'écran capturé.
 4. Widget / raccourcis Siri pour les actions rapides (app native : possible).
+
+## Poste de l'utilisateur
+
+- **MacBook Air**, dossier perso **`~/Documents/Perso`** (le `~/Perso` des autres
+  passations est sur le Pi, pas sur le Mac). Clone : `~/Documents/Perso/pilote-mac`.
+- Shell **zsh** : ne jamais mettre de commentaire `#` sur une ligne de commande
+  à coller, zsh le passe en argument (un `gh repo clone … # ou …` a échoué ainsi).
+- `~/Documents` est très probablement **synchronisé par iCloud Drive** : une
+  compilation dont le dossier de sortie est dans le projet échoue à la signature
+  (« resource fork… detritus not allowed »). Toujours compiler vers
+  `~/Library/Developer/…` (DerivedData par défaut d'Xcode, ou `-derivedDataPath`).
+- `xcode-select` pointe vers les Command Line Tools : préfixer `xcodebuild` par
+  `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer`.
+- **Xcode local plus récent que la CI** (16.4), et plus strict : l'avertissement
+  `#ImplicitStrongCapture` de `Channel.close()` y faisait **échouer** la
+  compilation en ligne de commande (« SwiftCompile … failed with exit code 0 but
+  produced no further output », Debug comme Release), sans que la CI le voie.
+  Corrigé par `[self]` explicite. Un avertissement rapporté par l'utilisateur
+  peut donc être bloquant chez lui : le traiter.
+- Enchaîner les commandes à coller avec `&&` : une ligne qui échoue ne doit pas
+  laisser partir la suivante (un `quit app` après une compilation ratée a arrêté
+  l'agent).
+- Signature : **Personal Team `J7KH3A5CM8`**, inscrite dans `project.yml`.
+  Le certificat « Apple Development » a dû être créé à la main (Manage
+  Certificates) ; la cible iOS exige l'iPhone branché pour obtenir un profil.
 
 ## Dépôt
 
