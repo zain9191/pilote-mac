@@ -128,10 +128,12 @@ Mac**, **app iOS native en Swift**, **projet séparé** de `maison-supervision`.
   `~/Library/Developer/…` (DerivedData par défaut d'Xcode, ou `-derivedDataPath`).
 - `xcode-select` pointe vers les Command Line Tools : préfixer `xcodebuild` par
   `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer`.
-- **Xcode local plus récent que la CI** (16.4) : il émet des avertissements que
-  la CI ne voit pas (ex. `#ImplicitStrongCapture` dans `Channel.close()`,
-  corrigé). Lire les avertissements des compilations locales que l'utilisateur
-  rapporte.
+- **Xcode local plus récent que la CI** (16.4), et plus strict : l'avertissement
+  `#ImplicitStrongCapture` de `Channel.close()` y faisait **échouer** la
+  compilation en ligne de commande (« SwiftCompile … failed with exit code 0 but
+  produced no further output », Debug comme Release), sans que la CI le voie.
+  Corrigé par `[self]` explicite. Un avertissement rapporté par l'utilisateur
+  peut donc être bloquant chez lui : le traiter.
 - Enchaîner les commandes à coller avec `&&` : une ligne qui échoue ne doit pas
   laisser partir la suivante (un `quit app` après une compilation ratée a arrêté
   l'agent).
