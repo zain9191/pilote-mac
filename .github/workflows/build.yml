@@ -41,6 +41,16 @@ jobs:
           xcodebuild build -project PiloteMac.xcodeproj -scheme PiloteAgent \
             -destination 'generic/platform=macOS' CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= -quiet
 
+      # Release (WMO, -O) n'était compilé nulle part : il a échoué sur le Mac de
+      # l'utilisateur alors que Debug passait.
+      - name: Agent macOS (Release)
+        run: |
+          status=0
+          xcodebuild build -project PiloteMac.xcodeproj -scheme PiloteAgent -configuration Release \
+            -destination 'generic/platform=macOS' CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= > release.log 2>&1 || status=$?
+          if [ "$status" -ne 0 ]; then grep -nE "error|Stack dump" release.log | head -40; tail -n 60 release.log; fi
+          exit "$status"
+
       - name: App iOS
         run: |
           xcodebuild build -project PiloteMac.xcodeproj -scheme Pilote \
