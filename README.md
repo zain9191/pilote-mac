@@ -55,14 +55,21 @@ Deux messages attendus au premier essai, dans *Signing & Capabilities* :
 ### 2. L'agent sur le Mac
 
 Le plus simple : schéma **PiloteAgent**, destination « My Mac », ⌘R. Pour une
-installation durable, compiler en Release et copier l'app dans `/Applications` :
+installation durable, compiler en Release et copier l'app dans `/Applications`
+(une seule ligne, chaque étape ne part que si la précédente a réussi) :
 
 ```bash
-xcodebuild -project PiloteMac.xcodeproj -scheme PiloteAgent -configuration Release \
-  -derivedDataPath build DEVELOPMENT_TEAM=<ID_EQUIPE> build
-cp -R "build/Build/Products/Release/Pilote Agent.app" /Applications/
-open "/Applications/Pilote Agent.app"
+DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project PiloteMac.xcodeproj -scheme PiloteAgent -configuration Release -destination 'platform=macOS,arch=arm64' -derivedDataPath "$HOME/Library/Developer/PiloteBuild" ARCHS=arm64 -allowProvisioningUpdates -quiet build && cp -R "$HOME/Library/Developer/PiloteBuild/Build/Products/Release/Pilote Agent.app" /Applications/ && open "/Applications/Pilote Agent.app"
 ```
+
+- `DEVELOPER_DIR` : sans lui, si `xcode-select` pointe vers les Command Line
+  Tools, `xcodebuild` refuse de tourner.
+- Dossier de compilation **hors de `~/Documents`** : si Documents est
+  synchronisé par iCloud Drive, les attributs étendus qu'il ajoute font échouer
+  la signature (« resource fork, Finder information, or similar detritus not
+  allowed »).
+- Pour une mise à jour, quitter l'agent et supprimer l'ancienne copie de
+  `/Applications` avant le `cp`, sinon la nouvelle se range à l'intérieur.
 
 Une icône d'iPhone apparaît dans la barre des menus. Dans son menu :
 

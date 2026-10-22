@@ -105,7 +105,8 @@ final class Channel {
 
     /// Ferme proprement (trame de fermeture puis annulation). Sans effet si déjà fermé.
     func close() {
-        queue.async {
+        // `[self]` explicite : la fermeture garde le canal en vie jusqu'à l'envoi.
+        queue.async { [self] in
             guard !self.finished else { return }
             let metadata = NWProtocolWebSocket.Metadata(opcode: .close)
             metadata.closeCode = .protocolCode(.normalClosure)
